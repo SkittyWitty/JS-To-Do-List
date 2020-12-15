@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale="1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dist/css/style.min.css"/>
+
     <title>To-Do List</title>
 </head>
 <body>
@@ -17,18 +21,10 @@
         <section class="listContainer">
             <div class="listTitle">
                 <h1>To-Do List</h1>
-                <button id="clearItems" class="button" title="Clear the list" aria-label="Remove all items from the list" tabindex="0">clear</button>
-                <hr />
+                <button id="clearItems" class="button" title="Clear the list" aria-label="Remove all items from the list" tabindex="0">Clear</button>
             </div>
+            <hr />
             <div id="listItems">
-                <div class="item">
-                    <input type="checkbox" id="1" tabindex="0">
-                    <label for="1">eat</label>
-                    <input type="checkbox" id="2" tabindex="0">
-                    <label for="2">sleep</label>
-                    <input type="checkbox" id="3" tabindex="0">
-                    <label for="3">Computer Science it up</label>
-                </div>
             </div>
         </section>
     </main>
