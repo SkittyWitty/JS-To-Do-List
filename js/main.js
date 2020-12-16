@@ -11,10 +11,10 @@ document.addEventListener("readystatechange", (event) => {
 const initApp = () => {
     // Listeners
     const itemEntryForm = document.getElementById("itemEntryForm");
-    itemEntryForm.addEventListener("submit", (event =>{
+    itemEntryForm.addEventListener("submit", (event) => {
         event.preventDefault();
         processSubmission();
-    }));
+    });
 
     const clearItems = document.getElementById("clearItems");
     clearItems.addEventListener("click", (event) => {
@@ -24,14 +24,29 @@ const initApp = () => {
              confirm("Are you sure you want to clear the entire");
             if(confirmed){
                 toDoList.clearList();
-                //TODO: update persistant data
+                updatePersistantData(toDoList.getList());
                 refreshThePage();
             }
         }
     })
 
     // Procedural
+    loadListObject();
     refreshThePage();
+};
+
+const loadListObject = () => {
+    const storedList = localStorage.getItem("myToDoList");
+    if(typeof storedList !== "string"){
+        return;
+    }
+    else{
+        const parsedList = JSON.parse(storedList);
+        parsedList.forEach(itemObj => {
+            const newToDoItem = createNewItem(itemObj._id, itemObj._item);
+            toDoList.addItemToList(newToDoItem);
+        });
+    }
 }
 
 const refreshThePage = () => {
@@ -39,12 +54,12 @@ const refreshThePage = () => {
     renderList();
     clearItemEntryField();
     setFocusOnItemEntryField();
-}
+};
 
 const clearListDisplay = () => {
     const parentElement = document.getElementById("listItems");
     deleteContents(parentElement);
-}
+};
 
 const deleteContents = (parentElement) => {
     let child = parentElement.lastElementChild;
@@ -52,14 +67,14 @@ const deleteContents = (parentElement) => {
         parentElement.removeChild(child);
         child = parentElement.lastElementChild;
     }
-}
+};
 
 const renderList = () => {
     const list = toDoList.getList();
-    list.forEach(item => {
+    list.forEach((item) => {
         buildListItem(item);
-    })
-}
+    });
+};
 
 const buildListItem = (item) => {
     const div = document.createElement("div");
@@ -76,26 +91,29 @@ const buildListItem = (item) => {
     div.appendChild(label);
     const container = document.getElementById("listItems");
     container.appendChild(div);
-}
+};
 
 const addClickListenerToCheckbox = (checkbox) => {
     checkbox.addEventListener("click", (event) => {
         toDoList.removeItemFromList(checkbox.id);
-
-        // TODO: remove from persistant data
+        updatePersistantData(toDoList.getList());
         setTimeout(() => {
             refreshThePage();
-        })
-    })
-}
+        }, 1000);
+    });
+};
+
+const updatePersistantData = (listArray) => {
+    localStorage.setItem("myToDoList", JSON.stringify(listArray));
+};
 
 const clearItemEntryField = () => {
     document.getElementById("newItem").value = "";
-}
+};
 
 const setFocusOnItemEntryField = () => {
     document.getElementById("newItem").focus();
-}
+};
 
 const processSubmission = () => {
     const newEntryText = getNewEntry();
@@ -106,14 +124,14 @@ const processSubmission = () => {
         const newItemId = calcNextItemId();
         const toDoItem = createNewItem(newItemId, newEntryText);
         toDoList.addItemToList(toDoItem);
-        // TODO: update persistant data
+        updatePersistantData(toDoList.getList());
         refreshThePage();
     }
-}
+};
 
 const getNewEntry = () => {
     return document.getElementById("newItem").value.trim();
-}
+};
 
 const calcNextItemId = () => {
     let nextItemId = 1;
@@ -121,12 +139,10 @@ const calcNextItemId = () => {
     if(list.length > 0){
         nextItemId = list[list.length - 1].getId() + 1;
     }
-    else{
-        return nextItemId;
-    }
-}
+    return nextItemId;
+};
 
 const createNewItem = (itemId, itemText) => {
     const toDo = new ToDoItem(itemId, itemText);
     return toDo;
-}
+};
